@@ -1,77 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>Fuse Beads</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             background: linear-gradient(to right, #667eea, #764ba2);
             color: white;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         #gameContainer {
             display: flex;
             flex-direction: column;
             align-items: center;
-            max-width: 90%;
+            padding: 20px;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 25px;
-            padding: 20px;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
         }
 
         #gameboard {
-            width: 300px;
-            height: 300px;
             display: grid;
             grid-template-columns: repeat(30, 1fr);
             grid-template-rows: repeat(30, 1fr);
+            gap: 2px;
+            width: 300px;
+            height: 300px;
             margin: 1em 0;
-            border-radius: 15px;
-            overflow: hidden;
         }
 
         .cell {
-            width: 10px;
-            height: 10px;
-            background: radial-gradient(circle at center, #555 30%, transparent 35%);
             border-radius: 50%;
-            touch-action: none;
-        }
-
-        .bead {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            background: radial-gradient(circle at center, #555 70%, transparent 75%);
             transition: background 0.3s;
         }
 
+        .bead {
+            background: radial-gradient(circle at center, transparent 30%, red 35%);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
         #colorInput {
-            position: absolute;
-            left: -10000px;
-            top: auto;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
+            display: none;
         }
 
         #preview {
+            cursor: pointer;
             width: 50px;
             height: 50px;
             border-radius: 50%;
             margin: 1em;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
             background: radial-gradient(circle at center, transparent 30%, red 35%);
-            cursor: pointer;
         }
     </style>
 </head>
@@ -83,85 +74,44 @@
         <div id="preview"></div>
     </div>
     <script>
-        // Function to generate a color
-        function hslToRgb(h, s, l){
-            let r, g, b;
-            if(s == 0){
-                r = g = b = l;
-            } else {
-                const hue2rgb = function (p, q, t){
-                    if(t < 0) t += 1;
-                    if(t > 1) t -= 1;
-                    if(t < 1/6) return p + (q - p) * 6 * t;
-                    if(t < 1/2) return q;
-                    if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                    return p;
-                }
-                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                const p = 2 * l - q;
-                r = hue2rgb(p, q, h + 1/3);
-                g = hue2rgb(p, q, h);
-                b = hue2rgb(p, q, h - 1/3);
-            }
-            return 'rgb(' + Math.round(r * 255) + ', ' + Math.round(g * 255) + ', ' + Math.round(b * 255) + ')';
-        }
+        const gameboard = document.querySelector('#gameboard');
+        const colorInput = document.querySelector('#colorInput');
+        const preview = document.querySelector('#preview');
+        let isDrawing = false;
+        let selectedColor = colorInput.value;
+
+        // Update the color preview
+        const updateColorPreview = () => {
+            preview.style.background = `radial-gradient(circle at center, transparent 30%, ${selectedColor} 35%)`;
+        };
+
+        // Handle color input change
+        colorInput.addEventListener('input', () => {
+            selectedColor = colorInput.value;
+            updateColorPreview();
+        });
+
+        // Open color picker when preview is clicked
+        preview.addEventListener('click', () => {
+            colorInput.click();
+        });
 
         // Create 30x30 cells
-        const gameboard = document.querySelector('#gameboard');
         for (let i = 0; i < 30 * 30; i++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
+            cell.addEventListener('mousedown', () => { isDrawing = true; });
+            cell.addEventListener('mouseup', () => { isDrawing = false; });
+            cell.addEventListener('mouseleave', () => { isDrawing = false; });
+            cell.addEventListener('mousemove', (e) => {
+                if (!isDrawing) return;
+                cell.style.background = `radial-gradient(circle at center, transparent 30%, ${selectedColor} 35%)`;
+                cell.classList.add('bead');
+            });
             gameboard.appendChild(cell);
         }
 
-        // Set up color picking
-        let selectedColor = 'rgb(255, 0, 0)';
-        const preview = document.querySelector('#preview');
-        const colorInput = document.querySelector('#colorInput');
-        preview.addEventListener('click', function() {
-            colorInput.dispatchEvent(new MouseEvent('click'));
-        });
-        colorInput.addEventListener('input', () => {
-            selectedColor = colorInput.value;
-            preview.style.background = `radial-gradient(circle at center, transparent 30%, ${selectedColor} 35%)`;
-        });
-
-        // Set up cell coloring on touch/mouse events
-        const cells = document.querySelectorAll('.cell');
-        let isDrawing = false;
-        cells.forEach(cell => {
-            cell.addEventListener('mousedown', startDrawing);
-            cell.addEventListener('touchstart', startDrawing);
-
-            cell.addEventListener('mousemove', draw);
-            cell.addEventListener('touchmove', draw);
-
-            cell.addEventListener('mouseup', stopDrawing);
-            cell.addEventListener('touchend', stopDrawing);
-            cell.addEventListener('mouseleave', stopDrawing);
-            cell.addEventListener('touchcancel', stopDrawing);
-        });
-
-        function startDrawing(e) {
-            e.preventDefault();
-            isDrawing = true;
-            draw(e);
-        }
-
-        function stopDrawing() {
-            isDrawing = false;
-        }
-
-        function draw(e) {
-            if (!isDrawing) return;
-            if (e.target.classList.contains('bead')) {
-                e.target.style.backgroundColor = ''; // clear the bead
-                e.target.classList.remove('bead');
-            } else {
-                e.target.style.backgroundColor = selectedColor;
-                e.target.classList.add('bead');
-            }
-        }
+        updateColorPreview();
     </script>
 </body>
 </html>
