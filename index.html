@@ -66,6 +66,7 @@
             border-radius: 50%;
             margin: 1em;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+            background: radial-gradient(circle at center, transparent 30%, red 35%);
         }
     </style>
 </head>
@@ -74,7 +75,7 @@
         <h1>Fuse Beads</h1>
         <div id="gameboard"></div>
         <input type="color" id="colorInput" value="#ff0000">
-        <div id="preview" style="background-color: red;"></div>
+        <div id="preview"></div>
     </div>
     <script>
         // Function to generate a color
@@ -114,7 +115,7 @@
         const colorInput = document.querySelector('#colorInput');
         colorInput.addEventListener('input', () => {
             selectedColor = colorInput.value;
-            preview.style.backgroundColor = selectedColor;
+            preview.style.background = `radial-gradient(circle at center, transparent 30%, ${selectedColor} 35%)`;
         });
 
         // Set up cell coloring on touch/mouse events
