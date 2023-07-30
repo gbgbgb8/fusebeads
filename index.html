@@ -45,8 +45,8 @@
         #colorPicker {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
-            max-width: 500px;
+            justify-content: space-around;
+            width: 300px; /* This should match the width of the gameboard */
         }
 
         .color {
@@ -73,11 +73,11 @@
 </head>
 <body>
     <div id="gameContainer">
+        <div id="gameboard"></div>
+        <div id="preview" style="background-color: red;"></div>
         <div id="colorPicker">
             <!-- Color options will be inserted here -->
         </div>
-        <div id="preview" style="background-color: red;"></div>
-        <div id="gameboard"></div>
     </div>
     <script>
         // Function to generate a color
