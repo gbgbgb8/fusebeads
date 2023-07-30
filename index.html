@@ -47,8 +47,12 @@
         }
 
         .bead {
-            background: radial-gradient(circle at center, transparent 30%, red 35%);
+            background: radial-gradient(circle at center, transparent 20%, red 25%, red 80%, transparent 85%);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #colorInput {
+            display: none;
         }
 
         #preview {
@@ -58,7 +62,7 @@
             border-radius: 50%;
             margin: 1em;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-            background: radial-gradient(circle at center, transparent 30%, red 35%);
+            background: radial-gradient(circle at center, transparent 20%, red 25%, red 80%, transparent 85%);
         }
     </style>
 </head>
@@ -73,12 +77,11 @@
         const gameboard = document.querySelector('#gameboard');
         const colorInput = document.querySelector('#colorInput');
         const preview = document.querySelector('#preview');
-        let isDrawing = false;
         let selectedColor = colorInput.value;
 
         // Update the color preview
         const updateColorPreview = () => {
-            preview.style.background = `radial-gradient(circle at center, transparent 30%, ${selectedColor} 35%)`;
+            preview.style.background = `radial-gradient(circle at center, transparent 20%, ${selectedColor} 25%, ${selectedColor} 80%, transparent 85%)`;
         };
 
         // Handle color input change
@@ -96,13 +99,14 @@
         for (let i = 0; i < 30 * 30; i++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
-            cell.addEventListener('mousedown', () => { isDrawing = true; });
-            cell.addEventListener('mouseup', () => { isDrawing = false; });
-            cell.addEventListener('mouseleave', () => { isDrawing = false; });
-            cell.addEventListener('mousemove', (e) => {
-                if (!isDrawing) return;
-                cell.style.background = `radial-gradient(circle at center, transparent 30%, ${selectedColor} 35%)`;
-                cell.classList.add('bead');
+            cell.addEventListener('click', (e) => {
+                if (cell.classList.contains('bead')) {
+                    cell.style.background = `radial-gradient(circle at center, #555 70%, transparent 75%)`;
+                    cell.classList.remove('bead');
+                } else {
+                    cell.style.background = `radial-gradient(circle at center, transparent 20%, ${selectedColor} 25%, ${selectedColor} 80%, transparent 85%)`;
+                    cell.classList.add('bead');
+                }
             });
             gameboard.appendChild(cell);
         }
