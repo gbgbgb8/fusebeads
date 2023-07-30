@@ -65,7 +65,7 @@
 </head>
 <body>
     <div id="gameContainer">
-        <h1>Color Grid Game</h1>
+        <h1>Fuse Beads</h1>
         <div id="gameboard"></div>
         <input type="color" id="colorInput" value="#ff0000">
         <div id="preview" style="background-color: red;"></div>
@@ -139,7 +139,11 @@
 
         function draw(e) {
             if (!isDrawing) return;
-            e.target.style.backgroundColor = selectedColor;
+            if (e.target.style.backgroundColor === selectedColor) {
+                e.target.style.backgroundColor = ''; // clear the cell
+            } else {
+                e.target.style.backgroundColor = selectedColor;
+            }
         }
     </script>
 </body>
