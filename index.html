@@ -46,7 +46,13 @@
         .cell {
             width: 10px;
             height: 10px;
+            background: radial-gradient(circle at center, #555 50%, transparent 60%);
+            border-radius: 50%;
             touch-action: none;
+        }
+
+        .bead {
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
             transition: background 0.3s;
         }
 
@@ -139,10 +145,12 @@
 
         function draw(e) {
             if (!isDrawing) return;
-            if (e.target.style.backgroundColor === selectedColor) {
-                e.target.style.backgroundColor = ''; // clear the cell
+            if (e.target.classList.contains('bead')) {
+                e.target.style.backgroundColor = ''; // clear the bead
+                e.target.classList.remove('bead');
             } else {
                 e.target.style.backgroundColor = selectedColor;
+                e.target.classList.add('bead');
             }
         }
     </script>
