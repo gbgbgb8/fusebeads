@@ -46,14 +46,14 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            max-width: 300px;
+            max-width: 500px;
         }
 
         .color {
-            width: 20px;
-            height: 20px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            margin: 2px;
+            margin: 1px;
         }
 
         #preview {
@@ -113,10 +113,10 @@
 
         // Generate color options
         const colorPicker = document.querySelector('#colorPicker');
-        for (let i = 0; i < 32; i++) {
+        for (let i = 0; i < 128; i++) {
             const color = document.createElement('div');
             color.classList.add('color');
-            color.style.backgroundColor = hslToRgb(i / 32, 1, 0.5);
+            color.style.backgroundColor = hslToRgb(i / 128, 1, 0.5);
             colorPicker.appendChild(color);
         }
 
