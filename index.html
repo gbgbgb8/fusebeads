@@ -50,26 +50,8 @@
             transition: background 0.3s;
         }
 
-        #colorPicker {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            width: 300px;
-            margin-bottom: 20px;
-        }
-
-        .color {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            margin: 5px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-            transition: box-shadow 0.3s;
-        }
-
-        .color:hover {
-            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+        #colorInput {
+            margin: 1em;
         }
 
         #preview {
@@ -85,8 +67,8 @@
     <div id="gameContainer">
         <h1>Color Grid Game</h1>
         <div id="gameboard"></div>
+        <input type="color" id="colorInput" value="#ff0000">
         <div id="preview" style="background-color: red;"></div>
-        <div id="colorPicker"></div>
     </div>
     <script>
         // Function to generate a color
@@ -120,24 +102,13 @@
             gameboard.appendChild(cell);
         }
 
-        // Generate color options
-        const colorPicker = document.querySelector('#colorPicker');
-        for (let i = 0; i < 128; i++) {
-            const color = document.createElement('div');
-            color.classList.add('color');
-            color.style.backgroundColor = hslToRgb(i / 128, 1, 0.5);
-            colorPicker.appendChild(color);
-        }
-
         // Set up color picking
         let selectedColor = 'rgb(255, 0, 0)';
-        const colors = document.querySelectorAll('.color');
         const preview = document.querySelector('#preview');
-        colors.forEach(color => {
-            color.addEventListener('click', () => {
-                selectedColor = window.getComputedStyle(color).backgroundColor;
-                preview.style.backgroundColor = selectedColor;
-            });
+        const colorInput = document.querySelector('#colorInput');
+        colorInput.addEventListener('input', () => {
+            selectedColor = colorInput.value;
+            preview.style.backgroundColor = selectedColor;
         });
 
         // Set up cell coloring on touch/mouse events
