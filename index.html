@@ -1,41 +1,90 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        #gameContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90%;
+        }
+
         #gameboard {
             width: 300px;
             height: 300px;
             display: grid;
             grid-template-columns: repeat(30, 1fr);
             grid-template-rows: repeat(30, 1fr);
-            float: left;
+            border: 1px solid #ddd;
+            margin: 1em 0;
         }
+
         .cell {
             width: 10px;
             height: 10px;
             border: 1px solid #ccc;
+            touch-action: none; /* Prevents default scroll behavior on touch */
         }
-        #beadPalette {
-            float: right;
-            width: 60px;
-            height: 60px;
-            padding: 10px;
+
+        #colorPicker {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 300px;
         }
-        .bead {
+
+        .color {
             width: 20px;
             height: 20px;
             border-radius: 50%;
+            margin: 2px;
+        }
+
+        #preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 1em;
+        }
+
+        @media (min-width: 600px) {
+            #gameContainer {
+                flex-direction: row;
+                justify-content: space-between;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="gameboard"></div>
-    <div id="beadPalette">
-        <div id="red" class="bead" draggable="true" style="background-color:red;"></div>
-        <div id="green" class="bead" draggable="true" style="background-color:green;"></div>
-        <div id="blue" class="bead" draggable="true" style="background-color:blue;"></div>
+    <div id="gameContainer">
+        <div id="colorPicker">
+            <!-- Color options will be inserted here -->
+        </div>
+        <div id="preview" style="background-color: red;"></div>
+        <div id="gameboard"></div>
     </div>
     <script>
+        // Function to generate a color
+        function hslToRgb(h, s, l){
+            // ... same as before ...
+        }
+
         // Create 30x30 cells
         const gameboard = document.querySelector('#gameboard');
         for (let i = 0; i < 30 * 30; i++) {
@@ -44,26 +93,56 @@
             gameboard.appendChild(cell);
         }
 
-        // Set up drag and drop
-        const beads = document.querySelectorAll('.bead');
+        // Generate color options
+        const colorPicker = document.querySelector('#colorPicker');
+        for (let i = 0; i < 32; i++) {
+            const color = document.createElement('div');
+            color.classList.add('color');
+            color.style.backgroundColor = hslToRgb(i / 32, 1, 0.5);
+            colorPicker.appendChild(color);
+        }
+
+        // Set up color picking
+        let selectedColor = 'rgb(255, 0, 0)';
+        const colors = document.querySelectorAll('.color');
+        const preview = document.querySelector('#preview');
+        colors.forEach(color => {
+            color.addEventListener('click', () => {
+                selectedColor = window.getComputedStyle(color).backgroundColor;
+                preview.style.backgroundColor = selectedColor;
+            });
+        });
+
+        // Set up cell coloring on touch/mouse events
         const cells = document.querySelectorAll('.cell');
-        let selectedBead = null;
-
-        beads.forEach(bead => {
-            bead.addEventListener('dragstart', e => {
-                e.dataTransfer.setData('text/plain', window.getComputedStyle(bead).backgroundColor);
-            });
-        });
-
+        let isDrawing = false;
         cells.forEach(cell => {
-            cell.addEventListener('dragover', e => {
-                e.preventDefault();
-            });
-            cell.addEventListener('drop', e => {
-                e.preventDefault();
-                cell.style.backgroundColor = e.dataTransfer.getData('text/plain');
-            });
+            cell.addEventListener('mousedown', startDrawing);
+            cell.addEventListener('touchstart', startDrawing);
+
+            cell.addEventListener('mousemove', draw);
+            cell.addEventListener('touchmove', draw);
+
+            cell.addEventListener('mouseup', stopDrawing);
+            cell.addEventListener('touchend', stopDrawing);
+            cell.addEventListener('mouseleave', stopDrawing);
+            cell.addEventListener('touchcancel', stopDrawing);
         });
+
+        function startDrawing(e) {
+            e.preventDefault();
+            isDrawing = true;
+            draw(e);
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.target.style.backgroundColor = selectedColor;
+        }
     </script>
 </body>
 </html>
