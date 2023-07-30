@@ -57,7 +57,11 @@
         }
 
         #colorInput {
-            display: none;
+            position: absolute;
+            left: -10000px;
+            top: auto;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
         }
 
         #preview {
@@ -76,7 +80,7 @@
         <h1>Fuse Beads</h1>
         <div id="gameboard"></div>
         <input type="color" id="colorInput" value="#ff0000">
-        <div id="preview" onclick="document.getElementById('colorInput').click();"></div>
+        <div id="preview"></div>
     </div>
     <script>
         // Function to generate a color
@@ -114,6 +118,9 @@
         let selectedColor = 'rgb(255, 0, 0)';
         const preview = document.querySelector('#preview');
         const colorInput = document.querySelector('#colorInput');
+        preview.addEventListener('click', function() {
+            colorInput.dispatchEvent(new MouseEvent('click'));
+        });
         colorInput.addEventListener('input', () => {
             selectedColor = colorInput.value;
             preview.style.background = `radial-gradient(circle at center, transparent 30%, ${selectedColor} 35%)`;
