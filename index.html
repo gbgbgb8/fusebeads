@@ -51,6 +51,13 @@
         .bead {
             background: radial-gradient(circle at center, transparent 10%, red 15%, red 80%, transparent 85%);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, filter 0.3s; /* Added for fusing effect */
+        }
+
+        /* Fused bead effect */
+        .bead.fused {
+            transform: scale(1.1);
+            filter: blur(1px);
         }
 
         #colorInput {
@@ -118,6 +125,7 @@
             <input type="file" id="loadInput" style="display: none;">
             <button id="loadButton">Load .fusebead</button>
             <button id="saveImageButton">Save as Image</button>
+            <button id="fuseButton">Fuse!</button>
         </div>
     </div>
     <script>
@@ -127,6 +135,7 @@
         const loadInput = document.querySelector('#loadInput');
         const loadButton = document.querySelector('#loadButton');
         const saveImageButton = document.querySelector('#saveImageButton');
+        const fuseButton = document.querySelector('#fuseButton');  // Fuse button
         let selectedColor = colorInput.value;
 
         // Update the color input
@@ -224,6 +233,14 @@
                 }
             });
         };
+
+        // Handle fuse button click
+        fuseButton.addEventListener('click', () => {
+            const beads = document.querySelectorAll('.bead');
+            beads.forEach(bead => {
+                bead.classList.add('fused');
+            });
+        });
 
         // Handle save image button click
         saveImageButton.addEventListener('click', () => {
