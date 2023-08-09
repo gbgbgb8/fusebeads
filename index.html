@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Fuse Beads</title>
     <style>
-        :root {
-    --board-size: 80vw; /* 80% of viewport width */
-    --cell-size: calc(var(--board-size) / 30); /* board size divided by number of cells */
-}
-
+        
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -36,22 +32,23 @@
         }
 
         #gameboard {
-    display: grid;
-    grid-template-columns: repeat(30, 1fr);
-    grid-template-rows: repeat(30, 1fr);
-    gap: 2px;
-    width: var(--board-size);
-    height: var(--board-size);
-    margin: 1em 0;
-}
+            display: grid;
+            grid-template-columns: repeat(30, 1fr);
+            grid-template-rows: repeat(30, 1fr);
+            gap: 2px;
+            width: 600px;
+            height: 600px;
+            margin: 1em 0;
+        }
 
-.cell {
-    border-radius: 50%;
-    background: radial-gradient(circle at center, #555 80%, transparent 85%);
-    transition: background 0.3s;
-    width: var(--cell-size);
-    height: var(--cell-size);
-}
+        .cell {
+            border-radius: 50%;
+            background: radial-gradient(circle at center, #555 80%, transparent 85%);
+            transition: background 0.3s;
+            width: 18px;
+            height: 18px;
+        }
+
         .bead {
             background: radial-gradient(circle at center, transparent 10%, red 15%, red 80%, transparent 85%);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
